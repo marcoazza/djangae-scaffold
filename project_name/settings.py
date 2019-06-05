@@ -52,7 +52,6 @@ MIDDLEWARE = (
     'djangae.contrib.gauth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'csp.middleware.CSPMiddleware',
-    'session_csrf.CsrfMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -69,7 +68,6 @@ TEMPLATES = [
                 "django.template.context_processors.static",
                 "django.template.context_processors.tz",
                 "django.contrib.messages.context_processors.messages",
-                "session_csrf.context_processor"
             ],
             'debug': True,
             'loaders': [
@@ -80,9 +78,7 @@ TEMPLATES = [
     },
 ]
 
-SILENCED_SYSTEM_CHECKS = [
-    'security.W003', # We're using session_csrf version of CsrfMiddleware, so we can skip that check
-]
+
 from .boot import register_custom_checks
 register_custom_checks()
 
@@ -129,5 +125,7 @@ CSP_SCRIPT_SRC = ("'self'", "*.googleanalytics.com", "*.google-analytics.com", "
 CSP_IMG_SRC = ("'self'", "data:", "s.ytimg.com", "*.googleusercontent.com", "*.gstatic.com", "www.google-analytics.com")
 CSP_CONNECT_SRC = ("'self'", "plus.google.com", "www.google-analytics.com")
 
+
+CSRF_USE_SESSIONS = True
 
 from djangae.contrib.gauth.settings import *
