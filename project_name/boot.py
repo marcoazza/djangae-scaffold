@@ -8,6 +8,7 @@ PROD_SITEPACKAGES_DIR = join(SITEPACKAGES_DIR, "prod")
 APPENGINE_DIR = join(DEV_SITEPACKAGES_DIR, "google_appengine")
 
 
+
 def fix_path(include_dev_libs_path=False):
     """ Insert libs folder(s) and SDK into sys.path. The one(s) inserted last take priority. """
     if include_dev_libs_path:
@@ -21,32 +22,6 @@ def fix_path(include_dev_libs_path=False):
         sys.path.insert(1, PROD_SITEPACKAGES_DIR)
 
 
-def get_app_config():
-    """Returns the application configuration, creating it if necessary."""
-    from django.utils.crypto import get_random_string
-    from google.appengine.ext import ndb
-
-    class Config(ndb.Model):
-        """A simple key-value store for application configuration settings."""
-        secret_key = ndb.StringProperty()
-
-    # Create a random SECRET_KEY
-    chars = 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'
-
-    @ndb.transactional()
-    def txn():
-        # Get or create the Config in a transaction, so that if it doesn't exist we don't get 2
-        # threads creating a Config object and one overwriting the other
-        key = ndb.Key(Config, 'config')
-        entity = key.get()
-        if not entity:
-            entity = Config(key=key)
-            entity.secret_key = get_random_string(50, chars)
-            entity.put()
-        return entity
-    return txn()
-
-
 def register_custom_checks():
     from . import checks
     from django.core.checks import register, Tags
@@ -54,3 +29,35 @@ def register_custom_checks():
     register(checks.check_session_csrf_enabled, Tags.security)
     register(checks.check_csp_is_not_report_only, Tags.security)
     register(checks.check_cached_template_loader_used, Tags.caches, deploy=True)
+
+
+def get_app_config(db):
+    """Returns the application configuration, creating it if necessary."""
+    from django.utils.crypto import get_random_string
+    from google.auth.credentials import AnonymousCredentials
+    from google.cloud import datastore
+    from google.cloud.exceptions import Unauthorized
+    import os
+    import requests
+    allowed_chars = 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'
+
+    gclient = datastore.Client(
+        namespace=db.get("NAMESPACE"),
+        project=db["PROJECT"],
+        credentials=AnonymousCredentials(),
+        _http=requests.Session if os.environ.get('GCD_HOST') else None,
+    )
+    try:
+        with gclient.transaction():
+            conf_key = gclient.key('Conf', 'conf')
+            entity = gclient.get(conf_key)
+            if not entity.get('secret_key'):
+                entity = datastore.Entity(key=conf_key)
+                entity.update({
+                    'secret_key': get_random_string(50, allowed_chars)
+                })
+                gclient.put(entity)
+            return entity
+    except Unauthorized:
+        # datastore might not be started yet
+        pass

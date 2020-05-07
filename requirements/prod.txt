@@ -1,5 +1,4 @@
-https://github.com/potatolondon/djangae/archive/e5a86b77140e2ce0fbe464eb2afd18fe3d977a5e.zip
-django>=1.11.19,<2.0
+django>=3.0
 git+https://github.com/mozilla/django-csp.git#"egg=djangocsp"
 git+https://github.com/adamalton/django-csp-reports.git#"egg=cspreports"
 django-session-csrf
@@ -12,3 +11,5 @@ six
 
 # Uncomment this if you want to use djangae.fields.ComputedCollationField
 # pyuca==1.1.2
+
+git+git://github.com/potatolondon/djangae.git@3db3ba53f99fc098b5d0902d07196eb205bc5842

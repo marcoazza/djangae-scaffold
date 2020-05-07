@@ -29,27 +29,27 @@ DEBUG = True
 # Application definition
 
 INSTALLED_APPS = (
-    'djangae', # Djangae needs to come before django apps in django 1.7 and above
+    'djangae', # is it still the case?
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
-    'djangae.contrib.contenttypes',
+    'djangae.contrib.contenttypes',   # dead -----
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'csp',
     'cspreports',
     'djangae.contrib.gauth_datastore',
-    'djangae.contrib.security',
+    'djangae.contrib.security',     # it's still there, is it working?
     '{{ project_name }}',
     # 'djangae.contrib.uniquetool',
 )
 
 MIDDLEWARE = (
-    'djangae.contrib.security.middleware.AppEngineSecurityMiddleware',
+    'djangae.contrib.security.middleware.AppEngineSecurityMiddleware',   # still used
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'djangae.contrib.gauth.middleware.AuthenticationMiddleware',
+    'djangae.contrib.gauth.middleware.AuthenticationMiddleware',   # dead ------
     'django.contrib.messages.middleware.MessageMiddleware',
     'csp.middleware.CSPMiddleware',
     'session_csrf.CsrfMiddleware',
@@ -129,5 +129,7 @@ CSP_SCRIPT_SRC = ("'self'", "*.googleanalytics.com", "*.google-analytics.com", "
 CSP_IMG_SRC = ("'self'", "data:", "s.ytimg.com", "*.googleusercontent.com", "*.gstatic.com", "www.google-analytics.com")
 CSP_CONNECT_SRC = ("'self'", "plus.google.com", "www.google-analytics.com")
 
+
+GCLOUDC_CACHE_ENABLED = True   # what is this?
 
 from djangae.contrib.gauth.settings import *
