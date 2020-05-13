@@ -19,7 +19,7 @@ def get_app_config(db):
         with gclient.transaction():
             conf_key = gclient.key('Conf', 'conf')
             entity = gclient.get(conf_key)
-            if not entity.get('secret_key'):
+            if not entity or not entity.get('secret_key'):
                 entity = datastore.Entity(key=conf_key)
                 entity.update({
                     'secret_key': get_random_string(50, allowed_chars)
@@ -27,5 +27,6 @@ def get_app_config(db):
                 gclient.put(entity)
             return entity
     except Unauthorized:
-        # datastore might not be started yet
+        # datastore emulator might not be started yet
+        # it happens during multiple imports
         pass

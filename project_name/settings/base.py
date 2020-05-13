@@ -20,6 +20,10 @@ PROJECT_NAME = '{{ project_name }}'
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+# we need to set the app.yaml path throught DJANGAE_APP_YAML_LOCATION env
+# otherwise it will try to reimport django settings file which will cause
+# `get_app_config` to fail
+os.environ.setdefault('DJANGAE_APP_YAML_LOCATION',  os.path.dirname(BASE_DIR))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
