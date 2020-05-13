@@ -1,15 +1,4 @@
-django>=3.0
-git+https://github.com/mozilla/django-csp.git#"egg=djangocsp"
-git+https://github.com/adamalton/django-csp-reports.git#"egg=cspreports"
-django-session-csrf
-six
-
-# Uncomment these to use mapreduce or djangae.contrib.uniquetool (which uses mapreduce)
-# These are forks of Google's libraries, which contain various fixes and patches
-#git+https://github.com/potatolondon/appengine-pipelines.git
-#git+https://github.com/potatolondon/potato-mapreduce.git#"egg=mapreduce"
-
-# Uncomment this if you want to use djangae.fields.ComputedCollationField
-# pyuca==1.1.2
-
+django>2.2,<3
 git+git://github.com/potatolondon/djangae.git@3db3ba53f99fc098b5d0902d07196eb205bc5842
+django-csp==3.6
+django-csp-reports==1.3

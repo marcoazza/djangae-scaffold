@@ -1,1 +1,1 @@
-nose
+gcloud-tasks-emulator==0.3.1
