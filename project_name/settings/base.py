@@ -90,7 +90,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'gcloudc.db.backends.datastore',
         'PROJECT': os.getenv('GAE_APPLICATION', 'local'),
-        'NAMESPACE': 'ns1',
+        'NAMESPACE': '',
     }
 }
 
