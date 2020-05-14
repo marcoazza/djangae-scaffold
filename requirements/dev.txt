@@ -1,1 +1,2 @@
 gcloud-tasks-emulator==0.3.1
+gcloud-storage-emulator==0.1.0
