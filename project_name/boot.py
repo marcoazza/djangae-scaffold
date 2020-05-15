@@ -3,7 +3,7 @@ def get_app_config(db):
     from django.utils.crypto import get_random_string
     from google.auth.credentials import AnonymousCredentials
     from google.cloud import datastore
-    from google.cloud.exceptions import Unauthorized
+    from djangae import environment
     import os
     import requests
 
@@ -12,7 +12,7 @@ def get_app_config(db):
     gclient = datastore.Client(
         namespace=db.get("NAMESPACE"),
         project=db["PROJECT"],
-        credentials=AnonymousCredentials(),
+        credentials=None if environment.is_production_environment() else AnonymousCredentials(),
         _http=requests.Session if os.environ.get('GCD_HOST') else None,
     )
 

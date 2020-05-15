@@ -68,15 +68,24 @@ def check_csp_sources_not_unsafe(app_configs, **kwargs):
 @register(Tags.security, deploy=True)
 def check_cached_template_loader_used(app_configs, **kwargs):
     """ Ensure that the cached template loader is used for Django's template system. """
+    errors = []
     for template in settings.TEMPLATES:
         if template['BACKEND'] != "django.template.backends.django.DjangoTemplates":
             continue
         loaders = template['OPTIONS'].get('loaders', [])
+        debug = template['OPTIONS'].get('debug', settings.DEBUG)
+        # by django default behavior, if loaders are not defined
+        # and OPTIONS['debug'] (which is defaulted to settings.DEBUG)
+        # is False, then 'django.template.loaders.cached.Loader' is
+        # automatically enabled
+        if not loaders and not debug:
+            continue
+
         for loader_tuple in loaders:
             if loader_tuple[0] == 'django.template.loaders.cached.Loader':
                 return []
-        error = Error(
+        errors.append(Error(
             "CACHED_TEMPLATE_LOADER_NOT_USED",
             hint="Please use 'django.template.loaders.cached.Loader' for Django templates"
-        )
-        return [error]
+        ))
+    return errors
